@@ -1,6 +1,11 @@
-// layers.js：排序（基线：原样返回）
-import { classify } from "./marquee.js";
+// layers.js：命中顺序 = 完全框住（层序高到低）拼接只相交（层序高到低）
+import { plan } from "./marquee.js";
+
+const byLayerDesc = (left, right) => right.z - left.z;
 
 export function orderHits(rect, objects) {
-  return objects.map((item) => item.id);
+  const { inside, crossing } = plan(rect, objects);
+  inside.sort(byLayerDesc);
+  crossing.sort(byLayerDesc);
+  return inside.concat(crossing).map((item) => item.id);
 }
